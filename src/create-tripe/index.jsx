@@ -1,13 +1,22 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
-import { SelectBudgetOptions, SelectTravelsList } from "@/constants/options";
+import { AI_PROMPT, SelectBudgetOptions, SelectTravelsList } from "@/constants/options";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner"
+import { chatSession } from "@/service/AIModal";
+import { Import } from "lucide-react";
+
+
 
 function CreateTripe() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [formData, setFormData] = useState({
+    budget: "",
+    noOfDays: "",
+  });
 
   // Function to handle input change and fetch results from Nominatim API
   const handleInputChange = async (e) => {
@@ -37,11 +46,55 @@ function CreateTripe() {
     }
   };
 
+  useEffect(() => {
+    console.log(results);
+  }, [results]);
+
   // Function to handle selection of a place
+  // const handleSelect = (place) => {
+  //   setQuery(place.display_name); // Update input with selected place
+  //   setResults([]); // Clear results after selection
+  // };
   const handleSelect = (place) => {
     setQuery(place.display_name); // Update input with selected place
     setResults([]); // Clear results after selection
+  
+    // Update the formData with the selected location
+    setFormData((prevData) => ({
+      ...prevData,
+      location: place.display_name, // Add the location to formData
+    }));
   };
+  
+
+  // Function to handle selecting options like budget and people
+  const handleOptionSelect = (field, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const OnGenerateTrip =async ()=>{
+    if(formData?.noOfDays>5&&!formData?.query||!formData?.budget||!formData?.traveler)
+    {
+      toast("Pleace fill all the details")
+
+      return;
+    }
+
+    const FINAL_PROMPT=AI_PROMPT
+    .replace('{location}',formData?.location)
+    .replace('{totalDays}',formData?.noOfDays)
+    .replace('{traveler}',formData?.traveler)
+    .replace('{budget}',formData?.budget)
+    // toast(FINAL_PROMPT)
+    console.log(FINAL_PROMPT)
+
+    const result= await chatSession.sendMessage(FINAL_PROMPT)
+
+    console.log(result?.response?.text());
+    }
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10">
@@ -78,22 +131,29 @@ function CreateTripe() {
         </div>
         <div>
           <h2 className="text-xl my-3 font-medium">
-            How many days are you planing your trip?
+            How many days are you planning your trip?
           </h2>
-          <Input placeholder={"Ex.3"} type="number" />
+          <Input
+            placeholder={"Ex.3"}
+            type="number"
+            onChange={(e) => handleOptionSelect("noOfDays", e.target.value)}
+          />
         </div>
       </div>
 
       <div>
         <h2 className="text-xl my-3 font-medium">
-          What is your Budget? The budget exclusively allocatrd for activities
+          What is your Budget? The budget exclusively allocated for activities
           and dining purposes.
         </h2>
         <div className="grid grid-cols-3 gap-5 mt-5">
           {SelectBudgetOptions.map((item, index) => (
             <div
               key={index}
-              className="p-4 border cursor-pointer rounded-lg hover:shadow-lg"
+              onClick={() => handleOptionSelect("budget", item.title)}
+              className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg
+                ${formData.budget == item.title && 'shadow-lg border-black'}
+                `}
             >
               <h2 className="text-4xl">{item.icon}</h2>
               <h2 className="font-bold text-lg">{item.title}</h2>
@@ -111,7 +171,10 @@ function CreateTripe() {
           {SelectTravelsList.map((item, index) => (
             <div
               key={index}
-              className="p-4 border cursor-pointer rounded-lg hover:shadow-lg"
+              onClick={() => handleOptionSelect("traveler", item.people)}
+              className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg
+                 ${formData.traveler == item.people && 'shadow-lg border-black'}
+                `}
             >
               <h2 className="text-4xl">{item.icon}</h2>
               <h2 className="font-bold text-lg">{item.title}</h2>
@@ -121,7 +184,7 @@ function CreateTripe() {
         </div>
       </div>
       <div className="mt-10 flex justify-end">
-      <Button> Generate Tripe</Button>
+        <Button onClick={OnGenerateTrip}> Generate Trip</Button>
       </div>
     </div>
   );
