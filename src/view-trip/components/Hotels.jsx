@@ -15,7 +15,7 @@ function Hotels({trip}) {
      
      
       <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5'>
-        {trip?.tripData?.travelPlan?.hotels?.map((hotel,index)=>(
+      {trip?.tripData?.travelPlan?.hotels?.map((hotel, index) => (
           <Link to={'https://www.google.com/maps/search/?api=1&query='+hotel?.hotelName+","+hotel?.hotelAddress} target='_blank'>
           <div key={index} className='hover:scale-105 transition-all cursor-pointer'> 
               <img src='/placeholder1.jpg' className='rounded-xl'/>

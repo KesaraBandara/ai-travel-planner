@@ -151,6 +151,36 @@ const navigate=useNavigate();
   //   navigate('/view-trip/'+docId)
   // };
 
+  // const SaveAiTrip = async (TripData) => {
+  //   setLoading(true);
+  //   const docId = Date.now().toString();
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  
+  //   let parsedTripData;
+  
+  //   // Try to parse the TripData and catch any JSON parsing errors
+  //   try {
+  //     parsedTripData = JSON.parse(TripData);
+  //   } catch (error) {
+  //     console.error("Error parsing TripData:", error);
+  //     console.log("Raw TripData:", TripData);  // Log the raw data to debug the issue
+  //     toast("Failed to parse the trip data.");
+  //     setLoading(false);
+  //     return;
+  //   }
+  
+  //   // Add a new document in collection "AITripes"
+  //   await setDoc(doc(db, "AITripes", docId), {
+  //     userSelection: formData,
+  //     tripData: parsedTripData,
+  //     userEmail: user?.email,
+  //     id: docId,
+  //   });
+  
+  //   setLoading(false);
+  //   navigate('/view-trip/' + docId);
+  // };
+  
   const SaveAiTrip = async (TripData) => {
     setLoading(true);
     const docId = Date.now().toString();
@@ -160,6 +190,10 @@ const navigate=useNavigate();
   
     // Try to parse the TripData and catch any JSON parsing errors
     try {
+      // Check if TripData is a valid JSON string
+      if (typeof TripData !== 'string' || !TripData.trim().startsWith('{')) {
+        throw new Error('Invalid JSON format');
+      }
       parsedTripData = JSON.parse(TripData);
     } catch (error) {
       console.error("Error parsing TripData:", error);
