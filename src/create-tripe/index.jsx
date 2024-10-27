@@ -74,23 +74,17 @@ const navigate=useNavigate();
     console.log(results);
   }, [results]);
 
-  // Function to handle selection of a place
-  // const handleSelect = (place) => {
-  //   setQuery(place.display_name); // Update input with selected place
-  //   setResults([]); // Clear results after selection
-  // };
+ 
   const handleSelect = (place) => {
     setQuery(place.display_name); // Update input with selected place
     setResults([]); // Clear results after selection
 
-    // Update the formData with the selected location
     setFormData((prevData) => ({
       ...prevData,
       location: place.display_name, // Add the location to formData
     }));
   };
 
-  // Function to handle selecting options like budget and people
   const handleOptionSelect = (field, value) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -136,50 +130,6 @@ const navigate=useNavigate();
     SaveAiTrip(result?.response?.text());
   };
 
-  // const SaveAiTrip = async (TripData) => {
-  //   setLoading(true);
-  //   const docId = Date.now().toString();
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   // Add a new document in collection "cities"
-  //   await setDoc(doc(db, "AITripes", docId), {
-  //     userSelection: formData,
-  //     tripData: JSON.parse(TripData),
-  //     userEmail: user?.email,
-  //     id: docId,
-  //   });
-  //   setLoading(false);
-  //   navigate('/view-trip/'+docId)
-  // };
-
-  // const SaveAiTrip = async (TripData) => {
-  //   setLoading(true);
-  //   const docId = Date.now().toString();
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  
-  //   let parsedTripData;
-  
-  //   // Try to parse the TripData and catch any JSON parsing errors
-  //   try {
-  //     parsedTripData = JSON.parse(TripData);
-  //   } catch (error) {
-  //     console.error("Error parsing TripData:", error);
-  //     console.log("Raw TripData:", TripData);  // Log the raw data to debug the issue
-  //     toast("Failed to parse the trip data.");
-  //     setLoading(false);
-  //     return;
-  //   }
-  
-  //   // Add a new document in collection "AITripes"
-  //   await setDoc(doc(db, "AITripes", docId), {
-  //     userSelection: formData,
-  //     tripData: parsedTripData,
-  //     userEmail: user?.email,
-  //     id: docId,
-  //   });
-  
-  //   setLoading(false);
-  //   navigate('/view-trip/' + docId);
-  // };
   
   const SaveAiTrip = async (TripData) => {
     setLoading(true);

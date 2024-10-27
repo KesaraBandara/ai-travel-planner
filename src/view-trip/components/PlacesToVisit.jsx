@@ -42,8 +42,8 @@ function PlacesToVisit({ trip }) {
       <h2 className="font-bold text-lg">Places to Visit</h2>
 
       <div>
-        {Array.isArray(trip?.tripData?.travelPlan?.itinerary) ? (
-          trip.tripData.travelPlan?.itinerary.map((item, index) => (
+        {Array.isArray(trip?.tripData?.itinerary) ? (
+          trip?.tripData?.itinerary.map((item, index) => (
             <div className="mt-5"  key={index}>
               <h2 className="font-medium text-lg">Day {item.day}</h2>
               <div className="grid md:grid-cols-2 gap-5">
