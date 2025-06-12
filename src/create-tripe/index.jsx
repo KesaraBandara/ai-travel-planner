@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { chatSession } from "@/service/AIModal";
 import { Code, Import } from "lucide-react";
-// import { l } from "vite/dist/node/types.d-aGj9QkWt";
 import { FcGoogle } from "react-icons/fc";
 
 import {
@@ -42,13 +41,11 @@ function CreateTripe() {
 
 const navigate=useNavigate();
 
-  // Function to handle input change and fetch results from Nominatim API
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setQuery(value);
 
     if (value.length > 2) {
-      // Start searching when input length is more than 2 characters
       try {
         const response = await axios.get(
           `https://nominatim.openstreetmap.org/search`,
@@ -66,7 +63,7 @@ const navigate=useNavigate();
         console.error("Error fetching data from Nominatim API:", error);
       }
     } else {
-      setResults([]); // Clear results if input is less than 3 characters
+      setResults([]); 
     }
   };
 
@@ -76,12 +73,12 @@ const navigate=useNavigate();
 
  
   const handleSelect = (place) => {
-    setQuery(place.display_name); // Update input with selected place
-    setResults([]); // Clear results after selection
+    setQuery(place.display_name); 
+    setResults([]);
 
     setFormData((prevData) => ({
       ...prevData,
-      location: place.display_name, // Add the location to formData
+      location: place.display_name, 
     }));
   };
 
@@ -120,7 +117,6 @@ const navigate=useNavigate();
       .replace("{totalDays}", formData?.noOfDays)
       .replace("{traveler}", formData?.traveler)
       .replace("{budget}", formData?.budget);
-    // toast(FINAL_PROMPT)
     console.log(FINAL_PROMPT);
 
     const result = await chatSession.sendMessage(FINAL_PROMPT);
@@ -138,22 +134,19 @@ const navigate=useNavigate();
   
     let parsedTripData;
   
-    // Try to parse the TripData and catch any JSON parsing errors
     try {
-      // Check if TripData is a valid JSON string
       if (typeof TripData !== 'string' || !TripData.trim().startsWith('{')) {
         throw new Error('Invalid JSON format');
       }
       parsedTripData = JSON.parse(TripData);
     } catch (error) {
       console.error("Error parsing TripData:", error);
-      console.log("Raw TripData:", TripData);  // Log the raw data to debug the issue
+      console.log("Raw TripData:", TripData);  
       toast("Failed to parse the trip data.");
       setLoading(false);
       return;
     }
   
-    // Add a new document in collection "AITripes"
     await setDoc(doc(db, "AITripes", docId), {
       userSelection: formData,
       tripData: parsedTripData,
